@@ -7,6 +7,7 @@
 
 \f0\fs24 \cf0 **Schema (MySQL v5.7)**\
 \
+    -- Vytvo\uc0\u345 en\'ed tabulek\
     CREATE TABLE Student (\
         student_id INT PRIMARY KEY AUTO_INCREMENT,\
         jmeno VARCHAR(100),\
@@ -36,6 +37,7 @@
         FOREIGN KEY (course_id) REFERENCES Course(course_id)\
     );\
     \
+    -- Vlo\'9een\'ed dat do tabulky Trainer\
     INSERT INTO Trainer (jmeno, prijmeni)\
     VALUES \
     ('Petr', 'Vavra'), \
@@ -43,7 +45,7 @@
     ('Ondrej', 'Novy'),\
     ('Jana', 'Cervena');\
     \
-    \
+    -- Vlo\'9een\'ed dat do tabulky Course\
     INSERT INTO Course (nazev_kurzu, kredit, trainer_id)\
     VALUES \
     ('Programovani v Pythonu', 5, 1), \
@@ -52,7 +54,7 @@
     ('Algoritmy a datove struktury', 6, 1),\
     ('Zaklady umele inteligence', 5, 4);\
     \
-    \
+    -- Vlo\'9een\'ed dat do tabulky Student\
     INSERT INTO Student (jmeno, prijmeni, datum_narozeni) \
     VALUES \
     ('Jan', 'Novak', '2000-05-12'), \
@@ -61,7 +63,7 @@
     ('Eva', 'Fiserova', '2001-01-10'),\
     ('Lukas', 'Bily', '2000-11-30');\
     \
-    \
+    -- Vlo\'9een\'ed dat do tabulky Student_Course_Signup\
     INSERT INTO Student_Course_Signup (student_id, course_id)\
     VALUES \
     (1, 1), \
@@ -75,24 +77,9 @@
     (4, 2),\
     (5, 4);\
     \
+    -- Pohledy (Views)\
     \
-    -- Zobrazit vsechny studenty\
-    SELECT * FROM Student;\
-    \
-    -- Zobrazit vsechny tren\'e9ry\
-    SELECT * FROM Trainer;\
-    \
-    -- Zobrazit vsechny kurzy\
-    SELECT * FROM Course;\
-    \
-    -- Zobrazit vsechny zapisy studentu na kurzy\
-    SELECT * FROM Student_Course_Signup;\
-    \
-    SELECT s.jmeno, s.prijmeni, c.nazev_kurzu\
-    FROM Student s\
-    JOIN Student_Course_Signup scs ON s.student_id = scs.student_id\
-    JOIN Course c ON scs.course_id = c.course_id;\
-    \
+    -- Pohled vracej\'edc\'ed TOP 5 kurz\uc0\u367  s nejv\'edce zapsan\'fdmi studenty\
     CREATE VIEW courses_with_most_signed_up_students AS\
     SELECT c.nazev_kurzu, COUNT(scs.student_id) AS pocet_studentu\
     FROM Course c\
@@ -101,6 +88,7 @@
     ORDER BY pocet_studentu DESC\
     LIMIT 5;\
     \
+    -- Pohled zobrazuj\'edc\'ed v\'9aechna data spojen\'e1 z tabulek\
     CREATE VIEW report_all_data AS\
     SELECT s.jmeno AS student_jmeno, s.prijmeni AS student_prijmeni, c.nazev_kurzu, t.jmeno AS trener_jmeno, t.prijmeni AS trener_prijmeni\
     FROM Student s\
@@ -108,6 +96,7 @@
     JOIN Course c ON scs.course_id = c.course_id\
     JOIN Trainer t ON c.trainer_id = t.trainer_id;\
     \
+    -- Pohled vracej\'edc\'ed tren\'e9ry, kte\uc0\u345 \'ed vyu\u269 uj\'ed alespo\u328  2 kurzy\
     CREATE VIEW trainers_teaching_atleast_2_courses AS\
     SELECT t.jmeno, t.prijmeni, COUNT(c.course_id) AS pocet_kurzu\
     FROM Trainer t\
@@ -115,6 +104,7 @@
     GROUP BY t.trainer_id\
     HAVING pocet_kurzu >= 2;\
     \
+    -- Pohled vracej\'edc\'ed TOP 3 tren\'e9ry s nejv\uc0\u283 t\'9a\'edm dosahem student\u367 \
     CREATE VIEW trainers_with_highest_student_outreach AS\
     SELECT t.jmeno, t.prijmeni, COUNT(scs.student_id) AS pocet_studentu\
     FROM Trainer t\
@@ -124,6 +114,26 @@
     ORDER BY pocet_studentu DESC\
     LIMIT 3;\
     \
+    -- Testovac\'ed dotazy\
+    -- Zobrazit v\'9aechny studenty\
+    SELECT * FROM Student;\
+    \
+    -- Zobrazit v\'9aechny tren\'e9ry\
+    SELECT * FROM Trainer;\
+    \
+    -- Zobrazit v\'9aechny kurzy\
+    SELECT * FROM Course;\
+    \
+    -- Zobrazit v\'9aechny z\'e1pisy student\uc0\u367  na kurzy\
+    SELECT * FROM Student_Course_Signup;\
+    \
+    -- Zobrazit studenty a kurzy, na kter\'e9 jsou zaps\'e1ni\
+    SELECT s.jmeno, s.prijmeni, c.nazev_kurzu\
+    FROM Student s\
+    JOIN Student_Course_Signup scs ON s.student_id = scs.student_id\
+    JOIN Course c ON scs.course_id = c.course_id;\
+    \
+    -- Zobrazit v\'fdsledek pohledu s TOP 5 kurzy s nejv\'edce studenty\
     SELECT * FROM courses_with_most_signed_up_students;\
     \
 \
